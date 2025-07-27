@@ -53,10 +53,8 @@ export {
   addCartItemAction,
   removeCartItemAction,
   updateCartItemQuantityAction,
-  toggleManualOverlayAction,
-  toggleManualColumnAction,
-  setManualOverlayHiddenAction,
-  setManualColumnTranslatedAction,
+  toggleManualAction,
+  setManualHideAction,
 } from './ui';
 
 // 전역 상태를 전달하는 셀렉터 래퍼들

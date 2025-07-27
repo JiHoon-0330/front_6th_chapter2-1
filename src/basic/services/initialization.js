@@ -9,10 +9,8 @@ import { RightColumn } from '../components/RightColumn';
 import { SelectorContainer } from '../components/SelectorContainer';
 import {
   dispatch,
-  setManualColumnTranslatedAction,
-  setManualOverlayHiddenAction,
-  toggleManualColumnAction,
-  toggleManualOverlayAction,
+  setManualHideAction,
+  toggleManualAction,
 } from '../utils/reducer';
 import { updateProductSelectOptions } from './productSelect';
 import { updateCartAndDisplay } from './cartService';
@@ -51,14 +49,12 @@ export function initializeUI() {
     }),
     ManualToggle({
       onClick: () => {
-        dispatch(toggleManualOverlayAction());
-        dispatch(toggleManualColumnAction());
+        dispatch(toggleManualAction());
       },
     }),
     ManualOverlay({
       onClick: () => {
-        dispatch(setManualOverlayHiddenAction(true));
-        dispatch(setManualColumnTranslatedAction(true));
+        dispatch(setManualHideAction());
       },
       children: [ManualColumn()],
     }),

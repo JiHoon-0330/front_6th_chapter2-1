@@ -59,20 +59,12 @@ export const uiReducer = (state = {}, action) => {
       updateCartItemQuantity(action.payload.productId, action.payload.quantity);
       return state;
 
-    case 'TOGGLE_MANUAL_OVERLAY':
-      toggleManualOverlay();
+    case 'TOGGLE_MANUAL':
+      toggleManual();
       return state;
 
-    case 'TOGGLE_MANUAL_COLUMN':
-      toggleManualColumn();
-      return state;
-
-    case 'SET_MANUAL_OVERLAY_HIDDEN':
-      setManualOverlayHidden(action.payload.hidden);
-      return state;
-
-    case 'SET_MANUAL_COLUMN_TRANSLATED':
-      setManualColumnTranslated(action.payload.translated);
+    case 'SET_MANUAL_HIDE':
+      setManualHide();
       return state;
 
     default:
@@ -342,39 +334,27 @@ function updateCartItemQuantity(productId, quantity) {
   }
 }
 
-function toggleManualOverlay() {
+function toggleManual() {
   const manualOverlay = document.querySelector('.fixed.inset-0');
   if (manualOverlay) {
     manualOverlay.classList.toggle('hidden');
   }
-}
 
-function toggleManualColumn() {
   const manualColumn = document.querySelector('.fixed.right-0');
   if (manualColumn) {
     manualColumn.classList.toggle('translate-x-full');
   }
 }
 
-function setManualOverlayHidden(hidden) {
+function setManualHide() {
   const manualOverlay = document.querySelector('.fixed.inset-0');
   if (manualOverlay) {
-    if (hidden) {
-      manualOverlay.classList.add('hidden');
-    } else {
-      manualOverlay.classList.remove('hidden');
-    }
+    manualOverlay.classList.add('hidden');
   }
-}
 
-function setManualColumnTranslated(translated) {
   const manualColumn = document.querySelector('.fixed.right-0');
   if (manualColumn) {
-    if (translated) {
-      manualColumn.classList.add('translate-x-full');
-    } else {
-      manualColumn.classList.remove('translate-x-full');
-    }
+    manualColumn.classList.add('translate-x-full');
   }
 }
 
@@ -444,12 +424,12 @@ export const updateCartItemQuantityAction = (productId, quantity) => ({
   payload: { productId, quantity },
 });
 
-export const toggleManualOverlayAction = () => ({
-  type: 'TOGGLE_MANUAL_OVERLAY',
+export const toggleManualAction = () => ({
+  type: 'TOGGLE_MANUAL',
 });
 
-export const toggleManualColumnAction = () => ({
-  type: 'TOGGLE_MANUAL_COLUMN',
+export const setManualHideAction = () => ({
+  type: 'SET_MANUAL_HIDE',
 });
 
 export const setManualOverlayHiddenAction = (hidden) => ({
