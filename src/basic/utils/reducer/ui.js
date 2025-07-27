@@ -1,3 +1,5 @@
+import { selector } from '../selector';
+
 // DOM 조작 액션들을 처리하는 리듀서
 export const uiReducer = (state = {}, action) => {
   switch (action.type) {
@@ -79,7 +81,6 @@ export const uiReducer = (state = {}, action) => {
 
 // DOM 조작 함수들
 function updateSelectorOptions(products) {
-  const selector = getSelector();
   selector.productSelect.innerHTML = '';
 
   let totalStock = 0;
@@ -147,12 +148,10 @@ function updateSelectorOptions(products) {
 }
 
 function updateSelectorBorderColor(color) {
-  const selector = getSelector();
   selector.productSelect.style.borderColor = color;
 }
 
 function updateCartTotal(totalAmount) {
-  const selector = getSelector();
   const sum = selector.cartTotal;
   const totalDiv = sum.querySelector('.text-2xl');
   if (totalDiv) {
@@ -161,18 +160,15 @@ function updateCartTotal(totalAmount) {
 }
 
 function updateCartItemCount(itemCount) {
-  const selector = getSelector();
   selector.headerItemCount.textContent = '🛍️ ' + itemCount + ' items in cart';
 }
 
 function updateCartSummary(summary) {
-  const selector = getSelector();
   const summaryDetails = selector.summaryDetails;
   summaryDetails.innerHTML = summary;
 }
 
 function updateLoyaltyPoints(points, details) {
-  const selector = getSelector();
   const loyaltyPointsDiv = selector.loyaltyPoints;
   if (loyaltyPointsDiv) {
     if (points > 0) {
@@ -192,7 +188,6 @@ function updateLoyaltyPoints(points, details) {
 }
 
 function updateDiscountInfo(discountRate, savedAmount) {
-  const selector = getSelector();
   const discountInfoDiv = selector.discountInfo;
   discountInfoDiv.innerHTML = '';
   if (discountRate > 0 && savedAmount > 0) {
@@ -209,12 +204,10 @@ function updateDiscountInfo(discountRate, savedAmount) {
 }
 
 function updateStockStatus(message) {
-  const selector = getSelector();
   selector.stockStatus.textContent = message;
 }
 
 function toggleTuesdaySpecial(visible) {
-  const selector = getSelector();
   const tuesdaySpecial = selector.tuesdaySpecial;
   if (visible) {
     tuesdaySpecial.classList.remove('hidden');
@@ -271,7 +264,6 @@ function updateCartItemPrices(cartItems, products) {
 }
 
 function addCartItem(item) {
-  const selector = getSelector();
   const newItem = document.createElement('div');
   newItem.id = item.id;
   newItem.className =
@@ -349,21 +341,6 @@ function setManualColumnTranslated(translated) {
       manualColumn.classList.remove('translate-x-full');
     }
   }
-}
-
-// selector 객체를 가져오는 헬퍼 함수
-function getSelector() {
-  return {
-    productSelect: document.getElementById('productSelect'),
-    cartItems: document.getElementById('cartItems'),
-    cartTotal: document.getElementById('cartTotal'),
-    headerItemCount: document.getElementById('headerItemCount'),
-    summaryDetails: document.getElementById('summaryDetails'),
-    loyaltyPoints: document.getElementById('loyaltyPoints'),
-    discountInfo: document.getElementById('discountInfo'),
-    stockStatus: document.getElementById('stockStatus'),
-    tuesdaySpecial: document.getElementById('tuesdaySpecial'),
-  };
 }
 
 // 액션 생성자들
