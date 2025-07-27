@@ -4,15 +4,15 @@ import { selector } from '../utils/selector';
 import { isLowStock } from '../utils/stock';
 
 // 재고 부족 상품 목록 생성 함수
-export function getLowStockItems(prodList) {
-  return prodList
+export function getLowStockItems(products) {
+  return products
     .filter((product) => isLowStock(product.q))
     .map((product) => product.name);
 }
 
 // 장바구니 아이템 정보 추출 함수
-export function getCartItemInfo(cartItem, prodList) {
-  const currentItem = prodList.find((product) => product.id === cartItem.id);
+export function getCartItemInfo(cartItem, products) {
+  const currentItem = products.find((product) => product.id === cartItem.id);
   const quantityElement = cartItem.querySelector('.quantity-number');
   const quantity = parseInt(quantityElement.textContent);
   const itemTotal = currentItem.val * quantity;
@@ -46,10 +46,10 @@ export function updatePriceStyles(cartItem, quantity) {
 }
 
 // 장바구니 아이템별 계산 함수
-export function calculateCartItem(cartItem, prodList) {
+export function calculateCartItem(cartItem, products) {
   const { currentItem, quantity, itemTotal } = getCartItemInfo(
     cartItem,
-    prodList
+    products
   );
   const { discountRate, discountInfo } = calculateIndividualDiscount(
     quantity,
@@ -69,9 +69,9 @@ export function calculateCartItem(cartItem, prodList) {
 
 // 장바구니 요약 정보 계산 함수
 export function calculateCartSummary() {
-  const prodList = getProducts();
+  const products = getProducts();
   const cartItems = selector.cartItems.children;
-  const lowStockItems = getLowStockItems(prodList);
+  const lowStockItems = getLowStockItems(products);
 
   let itemCount = 0;
   let subtotal = 0;
@@ -80,7 +80,7 @@ export function calculateCartSummary() {
 
   // 장바구니 아이템별 계산
   Array.from(cartItems).forEach((cartItem) => {
-    const cartItemResult = calculateCartItem(cartItem, prodList);
+    const cartItemResult = calculateCartItem(cartItem, products);
 
     itemCount += cartItemResult.quantity;
     subtotal += cartItemResult.itemTotal;
@@ -98,6 +98,6 @@ export function calculateCartSummary() {
     originalTotal: subtotal,
     itemDiscounts,
     lowStockItems,
-    prodList,
+    products,
   };
 }

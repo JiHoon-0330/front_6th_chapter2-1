@@ -2,13 +2,13 @@ import { selector } from '../utils/selector';
 import { isLowStock, isSoldOut } from '../utils/stock';
 
 // 재고 상태 메시지 생성 함수
-export function generateStockStatusMessage(prodList) {
-  if (!prodList || !Array.isArray(prodList)) {
+export function generateStockStatusMessage(products) {
+  if (!products || !Array.isArray(products)) {
     console.warn('Invalid product list provided to generateStockStatusMessage');
     return '';
   }
 
-  return prodList
+  return products
     .filter((item) => isLowStock(item.q) || isSoldOut(item.q))
     .map((item) => {
       if (isLowStock(item.q)) {
@@ -22,13 +22,13 @@ export function generateStockStatusMessage(prodList) {
 }
 
 // 재고 상태 표시 업데이트 함수
-export function updateStockDisplay(prodList) {
-  if (!prodList) {
+export function updateStockDisplay(products) {
+  if (!products) {
     console.warn('Product list is required for stock display update');
     return;
   }
 
-  const stockMsg = generateStockStatusMessage(prodList);
+  const stockMsg = generateStockStatusMessage(products);
 
   if (!selector.stockStatus) {
     console.warn('Stock status element not found');

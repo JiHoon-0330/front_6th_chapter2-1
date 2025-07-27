@@ -12,14 +12,14 @@ import { updateProductSelectOptions } from './productSelect';
 // 아이템 선택 검증 함수
 function validateItemSelection() {
   const selItem = selector.productSelect.value;
-  const prodList = getProducts();
-  const hasItem = prodList.some((product) => product.id === selItem);
+  const products = getProducts();
+  const hasItem = products.some((product) => product.id === selItem);
 
   if (!selItem || !hasItem) {
     return null;
   }
 
-  const itemToAdd = prodList.find((product) => product.id === selItem);
+  const itemToAdd = products.find((product) => product.id === selItem);
   if (!itemToAdd || itemToAdd.q <= 0) {
     return null;
   }
@@ -166,8 +166,8 @@ export function validateQuantityChangeEvent(event) {
 
   const prodId = tgt.dataset.productId;
   const itemElem = document.getElementById(prodId);
-  const prodList = getProducts();
-  const prod = prodList.find((product) => product.id === prodId);
+  const products = getProducts();
+  const prod = products.find((product) => product.id === prodId);
 
   if (!itemElem || !prod) {
     return null;

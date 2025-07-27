@@ -10,10 +10,10 @@ import { updateBonusPointsDisplay } from './points';
 // 장바구니 아이템 가격 업데이트 함수
 export function updateCartItemPrices() {
   const cartItems = selector.cartItems.children;
-  const prodList = getProducts();
+  const products = getProducts();
   Array.from(cartItems).forEach((cartItem) => {
     const itemId = cartItem.id;
-    const product = prodList.find((p) => p.id === itemId);
+    const product = products.find((p) => p.id === itemId);
     if (product) {
       const priceDiv = cartItem.querySelector('.text-lg');
       const nameDiv = cartItem.querySelector('h3');
@@ -50,7 +50,7 @@ export function updateCartItemPrices() {
 export function updateCartAndDisplay() {
   // 장바구니 요약 정보 계산
   const cartSummary = calculateCartSummary();
-  const { itemCnt, subTot, totalAmt, originalTotal, itemDiscounts, prodList } =
+  const { itemCnt, subTot, totalAmt, originalTotal, itemDiscounts, products } =
     cartSummary;
 
   // 할인 적용
@@ -70,11 +70,11 @@ export function updateCartAndDisplay() {
     discRate,
     originalTotal,
     itemDiscounts,
-    prodList
+    products
   );
 
   // 재고 상태 표시 업데이트
-  updateStockDisplay(prodList);
+  updateStockDisplay(products);
 
   // 보너스 포인트 렌더링
   updateBonusPointsDisplay({ itemCnt, totalAmt: finalTotalAmt });

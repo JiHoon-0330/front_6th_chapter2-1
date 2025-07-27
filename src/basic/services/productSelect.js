@@ -99,14 +99,14 @@ function updateProductSelectBorderStyle(totalStock) {
 
 // 상품 선택 옵션 업데이트 함수
 export function updateProductSelectOptions() {
-  const prodList = getProducts();
-  const totalStock = prodList.reduce((sum, product) => sum + product.q, 0);
+  const products = getProducts();
+  const totalStock = products.reduce((sum, product) => sum + product.q, 0);
 
   // 기존 옵션들 제거
   selector.productSelect.innerHTML = '';
 
   // 새로운 옵션들 생성 및 추가
-  prodList.forEach((item) => {
+  products.forEach((item) => {
     const optionElement = createProductOptionElement(item);
     selector.productSelect.appendChild(optionElement);
   });

@@ -14,16 +14,16 @@ export function startLightningSaleTimer() {
   const lightningDelay = Math.random() * TIMING.LIGHTNING_DELAY_MAX;
   setTimeout(() => {
     setInterval(function () {
-      const prodList = getProducts();
+      const products = getProducts();
 
       // 상품 목록이 비어있는 경우 처리
-      if (!prodList || prodList.length === 0) {
+      if (!products || products.length === 0) {
         console.warn('No products available for lightning sale');
         return;
       }
 
-      const luckyIdx = Math.floor(Math.random() * prodList.length);
-      const luckyItem = prodList[luckyIdx];
+      const luckyIdx = Math.floor(Math.random() * products.length);
+      const luckyItem = products[luckyIdx];
 
       if (luckyItem && luckyItem.q > 0 && !luckyItem.onSale) {
         dispatch(lightningSale(luckyItem.id));
@@ -43,8 +43,8 @@ export function startSuggestSaleTimer() {
     setInterval(function () {
       const lastSel = getLastSelectedProduct();
       if (lastSel) {
-        const prodList = getProducts();
-        const suggest = prodList.find(
+        const products = getProducts();
+        const suggest = products.find(
           (product) =>
             product.id !== lastSel && product.q > 0 && !product.suggestSale
         );

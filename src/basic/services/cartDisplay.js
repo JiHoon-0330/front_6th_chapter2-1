@@ -10,7 +10,7 @@ export function updateCartSummary(
   subTot,
   finalTotalAmt,
   itemDiscounts,
-  prodList
+  products
 ) {
   const summaryDetails = selector.summaryDetails;
   summaryDetails.innerHTML = '';
@@ -18,7 +18,7 @@ export function updateCartSummary(
   if (subTot > 0) {
     const cartItems = selector.cartItems.children;
     Array.from(cartItems).forEach((cartItem) => {
-      const curItem = prodList.find((product) => product.id === cartItem.id);
+      const curItem = products.find((product) => product.id === cartItem.id);
       const qtyElem = cartItem.querySelector('.quantity-number');
       const q = parseInt(qtyElem.textContent);
       const itemTotal = curItem.val * q;
@@ -165,13 +165,13 @@ export function updateCartDisplay(
   discRate,
   originalTotal,
   itemDiscounts,
-  prodList
+  products
 ) {
   // 헤더 아이템 카운트 업데이트
   updateHeaderItemCount(itemCnt);
 
   // 요약 상세 정보 업데이트
-  updateCartSummary(itemCnt, subTot, finalTotalAmt, itemDiscounts, prodList);
+  updateCartSummary(itemCnt, subTot, finalTotalAmt, itemDiscounts, products);
 
   // 총 금액 업데이트
   updateCartTotal(finalTotalAmt);
