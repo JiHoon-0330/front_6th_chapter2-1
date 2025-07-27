@@ -8,7 +8,7 @@ import {
   TUESDAY_SPECIAL_ID,
 } from '../utils/selector';
 
-export const createRightColumn = () => {
+export const RightColumn = () => {
   const rightColumn = document.createElement('div');
   rightColumn.className = 'bg-black text-white p-8 flex flex-col';
   rightColumn.innerHTML = html`

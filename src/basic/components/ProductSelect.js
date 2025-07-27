@@ -1,6 +1,6 @@
 import { PRODUCT_SELECT_ID } from '../utils/selector';
 
-export const createProductSelect = () => {
+export const ProductSelect = () => {
   const productSelect = document.createElement('select');
   productSelect.id = PRODUCT_SELECT_ID;
   productSelect.className =

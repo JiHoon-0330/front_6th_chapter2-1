@@ -1,6 +1,6 @@
 import { ADD_TO_CART_BUTTON_ID } from '../utils/selector';
 
-export const createAddToCartBtn = ({ onClick }) => {
+export const AddToCartBtn = ({ onClick }) => {
   const addToCartBtn = document.createElement('button');
   addToCartBtn.id = ADD_TO_CART_BUTTON_ID;
   addToCartBtn.className =

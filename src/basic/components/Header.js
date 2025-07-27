@@ -1,7 +1,7 @@
 import { html } from '../utils/html';
 import { HEADER_ITEM_COUNT_ID } from '../utils/selector';
 
-export const createHeader = () => {
+export const Header = () => {
   const headerElement = document.createElement('div');
   headerElement.className = 'mb-8';
   headerElement.innerHTML = html`
