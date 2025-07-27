@@ -11,64 +11,17 @@ import { createRightColumn } from './components/RightColumn';
 import { createSelectorContainer } from './components/SelectorContainer';
 import { createStockStatus } from './components/StockStatus';
 import { selector } from './utils/selector';
-
-let prodList;
-let lastSel;
+import {
+  dispatch,
+  updateProductQuantity,
+  lightningSale,
+  suggestSale,
+  getProducts,
+  getLastSelectedProduct,
+  setLastSelectedProduct,
+} from './utils/reducer';
 
 function main() {
-  lastSel = null;
-  prodList = [
-    {
-      id: 'p1',
-      name: '버그 없애는 키보드',
-      val: 10000,
-      originalVal: 10000,
-      q: 50,
-      onSale: false,
-      suggestSale: false,
-      discountRate: 0.1,
-    },
-    {
-      id: 'p2',
-      name: '생산성 폭발 마우스',
-      val: 20000,
-      originalVal: 20000,
-      q: 30,
-      onSale: false,
-      suggestSale: false,
-      discountRate: 0.15,
-    },
-    {
-      id: 'p3',
-      name: '거북목 탈출 모니터암',
-      val: 30000,
-      originalVal: 30000,
-      q: 20,
-      onSale: false,
-      suggestSale: false,
-      discountRate: 0.2,
-    },
-    {
-      id: 'p4',
-      name: '에러 방지 노트북 파우치',
-      val: 15000,
-      originalVal: 15000,
-      q: 0,
-      onSale: false,
-      suggestSale: false,
-      discountRate: 0.05,
-    },
-    {
-      id: 'p5',
-      name: '코딩할 때 듣는 Lo-Fi 스피커',
-      val: 25000,
-      originalVal: 25000,
-      q: 10,
-      onSale: false,
-      suggestSale: false,
-      discountRate: 0.25,
-    },
-  ];
   const root = document.getElementById('app');
   const header = createHeader();
   const gridContainer = createGridContainer();
@@ -114,11 +67,11 @@ function main() {
   const lightningDelay = Math.random() * 10000;
   setTimeout(() => {
     setInterval(function () {
+      const prodList = getProducts();
       const luckyIdx = Math.floor(Math.random() * prodList.length);
       const luckyItem = prodList[luckyIdx];
       if (luckyItem.q > 0 && !luckyItem.onSale) {
-        luckyItem.val = Math.round((luckyItem.originalVal * 80) / 100);
-        luckyItem.onSale = true;
+        dispatch(lightningSale(luckyItem.id));
         alert('⚡번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
         onUpdateSelectOptions();
         doUpdatePricesInCart();
@@ -127,7 +80,9 @@ function main() {
   }, lightningDelay);
   setTimeout(function () {
     setInterval(function () {
+      const lastSel = getLastSelectedProduct();
       if (lastSel) {
+        const prodList = getProducts();
         let suggest = null;
         for (let k = 0; k < prodList.length; k++) {
           if (prodList[k].id !== lastSel) {
@@ -145,8 +100,7 @@ function main() {
               suggest.name +
               '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
           );
-          suggest.val = Math.round((suggest.val * (100 - 5)) / 100);
-          suggest.suggestSale = true;
+          dispatch(suggestSale(suggest.id));
           onUpdateSelectOptions();
           doUpdatePricesInCart();
         }
@@ -159,6 +113,8 @@ function onUpdateSelectOptions() {
   let totalStock;
   let opt;
   let discountText;
+  const prodList = getProducts();
+
   selector.productSelect.innerHTML = '';
   totalStock = 0;
   for (let idx = 0; idx < prodList.length; idx++) {
@@ -228,6 +184,7 @@ function handleCalculateCartStuff() {
   let itemCnt = 0;
   let totalAmt = 0;
   let originalTotal = 0;
+  const prodList = getProducts();
 
   const cartItems = selector.cartItems.children;
   let subTot = 0;
@@ -411,6 +368,7 @@ const doRenderBonusPoints = function ({ itemCnt, totalAmt }) {
     selector.loyaltyPoints.style.display = 'none';
     return;
   }
+  const prodList = getProducts();
   const basePoints = Math.floor(totalAmt / 1000);
   let finalPoints = 0;
   const pointsDetail = [];
@@ -482,6 +440,7 @@ const doRenderBonusPoints = function ({ itemCnt, totalAmt }) {
 const handleStockInfoUpdate = function () {
   let infoMsg;
   infoMsg = '';
+  const prodList = getProducts();
 
   prodList.forEach(function (item) {
     if (item.q < 5) {
@@ -496,6 +455,7 @@ const handleStockInfoUpdate = function () {
 };
 function doUpdatePricesInCart() {
   const cartItems = selector.cartItems.children;
+  const prodList = getProducts();
   for (let i = 0; i < cartItems.length; i++) {
     const itemId = cartItems[i].id;
     let product = null;
@@ -544,6 +504,7 @@ main();
 
 function handleClickAddToCartBtn() {
   const selItem = selector.productSelect.value;
+  const prodList = getProducts();
   let hasItem = false;
   for (let idx = 0; idx < prodList.length; idx++) {
     if (prodList[idx].id === selItem) {
@@ -568,7 +529,7 @@ function handleClickAddToCartBtn() {
       const newQty = parseInt(qtyElem['textContent']) + 1;
       if (newQty <= itemToAdd.q + parseInt(qtyElem.textContent)) {
         qtyElem.textContent = newQty;
-        itemToAdd['q']--;
+        dispatch(updateProductQuantity(itemToAdd.id, -1));
       } else {
         alert('재고가 부족합니다.');
       }
@@ -597,10 +558,10 @@ function handleClickAddToCartBtn() {
         </div>
       `;
       selector.cartItems.appendChild(newItem);
-      itemToAdd.q--;
+      dispatch(updateProductQuantity(itemToAdd.id, -1));
     }
     handleCalculateCartStuff();
-    lastSel = selItem;
+    dispatch(setLastSelectedProduct(selItem));
   }
 }
 
@@ -612,6 +573,7 @@ function handleClickQuantityChange(event) {
   ) {
     const prodId = tgt.dataset.productId;
     const itemElem = document.getElementById(prodId);
+    const prodList = getProducts();
     let prod = null;
     for (let prdIdx = 0; prdIdx < prodList.length; prdIdx++) {
       if (prodList[prdIdx].id === prodId) {
@@ -626,9 +588,9 @@ function handleClickQuantityChange(event) {
       const newQty = currentQty + qtyChange;
       if (newQty > 0 && newQty <= prod.q + currentQty) {
         qtyElem.textContent = newQty;
-        prod.q -= qtyChange;
+        dispatch(updateProductQuantity(prodId, -qtyChange));
       } else if (newQty <= 0) {
-        prod.q += currentQty;
+        dispatch(updateProductQuantity(prodId, currentQty));
         itemElem.remove();
       } else {
         alert('재고가 부족합니다.');
@@ -636,7 +598,7 @@ function handleClickQuantityChange(event) {
     } else if (tgt.classList.contains('remove-item')) {
       const qtyElem = itemElem.querySelector('.quantity-number');
       const remQty = parseInt(qtyElem.textContent);
-      prod.q += remQty;
+      dispatch(updateProductQuantity(prodId, remQty));
       itemElem.remove();
     }
     handleCalculateCartStuff();
