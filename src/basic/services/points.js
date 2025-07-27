@@ -1,32 +1,9 @@
-import { QUANTITY_THRESHOLDS } from '../utils/constants';
+import { PRODUCT_IDS, QUANTITY_THRESHOLDS } from '../utils/constants';
 import { calculateBasePoints, calculateTotalPoints } from '../utils/points';
 import { isTuesday } from '../utils/date';
-import { getProducts } from '../utils/reducer';
 import { selector } from '../utils/selector';
 import { html } from '../utils/html';
-
-// 제품 세트 확인 함수
-export function checkProductSet() {
-  const prodList = getProducts();
-  let hasKeyboard = false;
-  let hasMouse = false;
-  let hasMonitorArm = false;
-
-  for (const node of selector.cartItems.children) {
-    const product = prodList.find((p) => p.id === node.id);
-    if (!product) continue;
-
-    if (product.id === 'p1') {
-      hasKeyboard = true;
-    } else if (product.id === 'p2') {
-      hasMouse = true;
-    } else if (product.id === 'p3') {
-      hasMonitorArm = true;
-    }
-  }
-
-  return { hasKeyboard, hasMouse, hasMonitorArm };
-}
+import { hasProducts } from './cartOperations';
 
 // 보너스 포인트 계산 함수
 export function calculateBonusPoints(
@@ -81,17 +58,17 @@ export function generatePointsDetail(
   return pointsDetail;
 }
 
-// 보너스 포인트 표시 업데이트 함수
-export function updateBonusPointsDisplay({ itemCnt, totalAmt }) {
+// 포인트 계산 비즈니스 로직
+export function calculatePointsForDisplay({ itemCnt, totalAmt }) {
   if (selector.cartItems.children.length === 0) {
-    if (selector.loyaltyPoints) {
-      selector.loyaltyPoints.style.display = 'none';
-    }
-    return;
+    return { finalPoints: 0, pointsDetail: [] };
   }
 
-  // 제품 세트 확인
-  const { hasKeyboard, hasMouse, hasMonitorArm } = checkProductSet();
+  const [hasKeyboard, hasMouse, hasMonitorArm] = hasProducts(
+    PRODUCT_IDS.KEYBOARD,
+    PRODUCT_IDS.MOUSE,
+    PRODUCT_IDS.MONITOR_ARM
+  );
 
   // 포인트 계산
   const finalPoints = calculateBonusPoints(
@@ -111,19 +88,44 @@ export function updateBonusPointsDisplay({ itemCnt, totalAmt }) {
     hasMonitorArm
   );
 
+  return { finalPoints, pointsDetail };
+}
+
+// 포인트 UI 업데이트 로직
+export function updatePointsUI({ finalPoints, pointsDetail }) {
   const ptsTag = selector.loyaltyPoints;
-  if (ptsTag) {
-    if (finalPoints > 0) {
-      ptsTag.innerHTML = html`<div>
-          적립 포인트: <span class="font-bold">${finalPoints}p</span>
-        </div>
-        <div class="text-2xs opacity-70 mt-1">${pointsDetail.join(', ')}</div>`;
-      ptsTag.style.display = 'block';
-    } else {
-      ptsTag.textContent = '적립 포인트: 0p';
-      ptsTag.style.display = 'block';
-    }
-  } else {
+  if (!ptsTag) {
     console.warn('Loyalty points element not found');
+    return;
   }
+
+  if (finalPoints > 0) {
+    ptsTag.innerHTML = html`<div>
+        적립 포인트: <span class="font-bold">${finalPoints}p</span>
+      </div>
+      <div class="text-2xs opacity-70 mt-1">${pointsDetail.join(', ')}</div>`;
+    ptsTag.style.display = 'block';
+  } else {
+    ptsTag.textContent = '적립 포인트: 0p';
+    ptsTag.style.display = 'block';
+  }
+}
+
+// 보너스 포인트 표시 업데이트 함수
+export function updateBonusPointsDisplay({ itemCnt, totalAmt }) {
+  if (selector.cartItems.children.length === 0) {
+    if (selector.loyaltyPoints) {
+      selector.loyaltyPoints.style.display = 'none';
+    }
+    return;
+  }
+
+  // 비즈니스 로직: 포인트 계산
+  const { finalPoints, pointsDetail } = calculatePointsForDisplay({
+    itemCnt,
+    totalAmt,
+  });
+
+  // UI 로직: 포인트 표시 업데이트
+  updatePointsUI({ finalPoints, pointsDetail });
 }

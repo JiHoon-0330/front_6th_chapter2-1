@@ -10,7 +10,7 @@ import { updateCartAndDisplay } from './cartService';
 import { updateProductSelectOptions } from './productSelect';
 
 // 아이템 선택 검증 함수
-export function validateItemSelection() {
+function validateItemSelection() {
   const selItem = selector.productSelect.value;
   const prodList = getProducts();
   const hasItem = prodList.some((product) => product.id === selItem);
@@ -238,4 +238,11 @@ export function handleQuantityChange(event) {
   }
   updateCartAndDisplay();
   updateProductSelectOptions();
+}
+
+export function hasProducts(...productIds) {
+  const cartItemIds = new Set(
+    Array.from(selector.cartItems.children).map((cartItem) => cartItem.id)
+  );
+  return productIds.map((productId) => cartItemIds.has(productId));
 }

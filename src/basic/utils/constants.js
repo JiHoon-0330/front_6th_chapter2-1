@@ -1,20 +1,20 @@
-// 시간 관련 상수
+// 타이밍 관련 상수
 export const TIMING = {
   LIGHTNING_DELAY_MAX: 10000,
   LIGHTNING_INTERVAL: 30000,
-  SUGGEST_INTERVAL: 60000,
-  SUGGEST_DELAY_MAX: 20000,
+  SUGGEST_DELAY_MAX: 15000,
+  SUGGEST_INTERVAL: 45000,
 };
 
-// 할인율 상수
+// 할인율 관련 상수
 export const DISCOUNT_RATES = {
-  LIGHTNING_SALE: 0.2, // 20%
-  SUGGEST_SALE: 0.05, // 5%
-  BULK_PURCHASE: 0.25, // 25%
-  TUESDAY_SPECIAL: 0.1, // 10%
+  LIGHTNING_SALE: 0.2,
+  SUGGEST_SALE: 0.1,
+  BULK_PURCHASE: 0.25,
+  TUESDAY_SPECIAL: 0.1,
 };
 
-// 수량 기준 상수
+// 수량 임계값 관련 상수
 export const QUANTITY_THRESHOLDS = {
   INDIVIDUAL_DISCOUNT: 10,
   BULK_PURCHASE: 30,
@@ -22,15 +22,23 @@ export const QUANTITY_THRESHOLDS = {
   BONUS_10: 10,
 };
 
-// 포인트 상수
+// 포인트 관련 상수
 export const POINTS = {
-  BASE_RATE: 1000, // 1000원당 1포인트
-  TUESDAY_MULTIPLIER: 2, // 화요일 2배
-  KEYBOARD_MOUSE_SET: 50, // 키보드+마우스 세트
-  FULL_SET: 100, // 풀세트
-  BULK_30: 100, // 30개+
-  BULK_20: 50, // 20개+
-  BULK_10: 20, // 10개+
+  BASE_RATE: 1000,
+  KEYBOARD_MOUSE_SET: 50,
+  FULL_SET: 100,
+  BULK_PURCHASE_30: 100,
+  BULK_PURCHASE_20: 50,
+  BULK_PURCHASE_10: 20,
+};
+
+// 제품 ID 상수
+export const PRODUCT_IDS = {
+  KEYBOARD: 'p1',
+  MOUSE: 'p2',
+  MONITOR_ARM: 'p3',
+  LAPTOP_POUCH: 'p4',
+  SPEAKER: 'p5',
 };
 
 // 재고 관련 상수

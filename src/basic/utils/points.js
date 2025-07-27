@@ -9,7 +9,7 @@ export function calculateBasePoints(amount) {
  * 화요일 포인트 2배 적용
  */
 export function applyTuesdayBonus(basePoints, date = new Date()) {
-  return isTuesday(date) ? basePoints * POINTS.TUESDAY_MULTIPLIER : basePoints;
+  return isTuesday(date) ? basePoints * 2 : basePoints;
 }
 
 /**
@@ -24,9 +24,12 @@ export function calculateExtraPoints({
   let extra = 0;
   if (hasKeyboard && hasMouse) extra += POINTS.KEYBOARD_MOUSE_SET;
   if (hasKeyboard && hasMouse && hasMonitorArm) extra += POINTS.FULL_SET;
-  if (itemCnt >= QUANTITY_THRESHOLDS.BULK_PURCHASE) extra += POINTS.BULK_30;
-  else if (itemCnt >= QUANTITY_THRESHOLDS.BONUS_20) extra += POINTS.BULK_20;
-  else if (itemCnt >= QUANTITY_THRESHOLDS.BONUS_10) extra += POINTS.BULK_10;
+  if (itemCnt >= QUANTITY_THRESHOLDS.BULK_PURCHASE)
+    extra += POINTS.BULK_PURCHASE_30;
+  else if (itemCnt >= QUANTITY_THRESHOLDS.BONUS_20)
+    extra += POINTS.BULK_PURCHASE_20;
+  else if (itemCnt >= QUANTITY_THRESHOLDS.BONUS_10)
+    extra += POINTS.BULK_PURCHASE_10;
   return extra;
 }
 
