@@ -570,18 +570,14 @@ function updateCartAndDisplay() {
   // 보너스 포인트 렌더링
   updateBonusPointsDisplay({ itemCnt, totalAmt: finalTotalAmt });
 }
-const updateBonusPointsDisplay = function ({ itemCnt, totalAmt }) {
-  if (selector.cartItems.children.length === 0) {
-    selector.loyaltyPoints.style.display = 'none';
-    return;
-  }
 
+// 제품 세트 확인 함수
+function checkProductSet() {
   const prodList = getProducts();
-
-  // 제품 세트 확인
   let hasKeyboard = false;
   let hasMouse = false;
   let hasMonitorArm = false;
+
   for (const node of selector.cartItems.children) {
     const product = prodList.find((p) => p.id === node.id);
     if (!product) continue;
@@ -595,18 +591,37 @@ const updateBonusPointsDisplay = function ({ itemCnt, totalAmt }) {
     }
   }
 
-  // 포인트 계산 유틸 함수 사용
-  const finalPoints = calculateTotalPoints({
+  return { hasKeyboard, hasMouse, hasMonitorArm };
+}
+
+// 보너스 포인트 계산 함수
+function calculateBonusPoints(
+  totalAmt,
+  itemCnt,
+  hasKeyboard,
+  hasMouse,
+  hasMonitorArm
+) {
+  return calculateTotalPoints({
     amount: totalAmt,
     itemCnt,
     hasKeyboard,
     hasMouse,
     hasMonitorArm,
   });
+}
 
-  // 포인트 상세 정보 생성
+// 포인트 상세 정보 생성 함수
+function generatePointsDetail(
+  totalAmt,
+  itemCnt,
+  hasKeyboard,
+  hasMouse,
+  hasMonitorArm
+) {
   const pointsDetail = [];
   const basePoints = calculateBasePoints(totalAmt);
+
   if (basePoints > 0) {
     pointsDetail.push(`기본: ${basePoints}p`);
   }
@@ -628,6 +643,36 @@ const updateBonusPointsDisplay = function ({ itemCnt, totalAmt }) {
   } else if (itemCnt >= QUANTITY_THRESHOLDS.BONUS_10) {
     pointsDetail.push('대량구매(10개+) +20p');
   }
+
+  return pointsDetail;
+}
+
+const updateBonusPointsDisplay = function ({ itemCnt, totalAmt }) {
+  if (selector.cartItems.children.length === 0) {
+    selector.loyaltyPoints.style.display = 'none';
+    return;
+  }
+
+  // 제품 세트 확인
+  const { hasKeyboard, hasMouse, hasMonitorArm } = checkProductSet();
+
+  // 포인트 계산
+  const finalPoints = calculateBonusPoints(
+    totalAmt,
+    itemCnt,
+    hasKeyboard,
+    hasMouse,
+    hasMonitorArm
+  );
+
+  // 포인트 상세 정보 생성
+  const pointsDetail = generatePointsDetail(
+    totalAmt,
+    itemCnt,
+    hasKeyboard,
+    hasMouse,
+    hasMonitorArm
+  );
 
   const ptsTag = selector.loyaltyPoints;
   if (ptsTag) {
