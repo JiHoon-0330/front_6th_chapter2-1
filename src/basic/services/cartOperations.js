@@ -6,6 +6,8 @@ import {
 } from '../utils/reducer';
 import { selector } from '../utils/selector';
 import { html } from '../utils/html';
+import { updateCartAndDisplay } from './cartService';
+import { updateProductSelectOptions } from './productSelect';
 
 // 아이템 선택 검증 함수
 export function validateItemSelection() {
@@ -132,7 +134,7 @@ export function createCartItemElement(itemToAdd) {
 }
 
 // 장바구니에 아이템 추가 함수
-export function addItemToCart({ updateCartAndDisplay }) {
+export function handleAddItemToCart() {
   const itemToAdd = validateItemSelection();
   if (!itemToAdd) {
     return;
@@ -216,10 +218,7 @@ export function handleItemRemoval(prodId, itemElem) {
 }
 
 // 수량 변경 이벤트 처리 함수
-export function handleQuantityChange(
-  event,
-  { updateCartAndDisplay, updateProductSelectOptions }
-) {
+export function handleQuantityChange(event) {
   const eventData = validateQuantityChangeEvent(event);
   if (!eventData) {
     return;

@@ -17,9 +17,12 @@ import {
   toggleManualColumnAction,
   toggleManualOverlayAction,
 } from '../utils/reducer';
+import { updateProductSelectOptions } from './productSelect';
+import { updateCartAndDisplay } from './cartService';
+import { handleAddItemToCart, handleQuantityChange } from './cartOperations';
 
 // UI 초기화 및 이벤트 설정 함수
-export function initializeUI({ addItemToCart, handleQuantityChange }) {
+export function initializeUI() {
   const root = document.getElementById('app');
   const header = createHeader();
   const gridContainer = createGridContainer();
@@ -27,7 +30,7 @@ export function initializeUI({ addItemToCart, handleQuantityChange }) {
   const selectorContainer = createSelectorContainer();
   const rightColumn = createRightColumn();
   const sel = createProductSelect();
-  const addBtn = createAddToCartBtn({ onClick: addItemToCart });
+  const addBtn = createAddToCartBtn({ onClick: handleAddItemToCart });
   const stockInfo = createStockStatus();
 
   selectorContainer.appendChild(sel);
@@ -62,10 +65,7 @@ export function initializeUI({ addItemToCart, handleQuantityChange }) {
 }
 
 // 초기 앱 상태 설정 함수
-export function initializeAppState({
-  updateProductSelectOptions,
-  updateCartAndDisplay,
-}) {
+export function initializeAppState() {
   updateProductSelectOptions();
   updateCartAndDisplay();
 }

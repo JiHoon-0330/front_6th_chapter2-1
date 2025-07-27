@@ -6,12 +6,11 @@ import {
   lightningSale,
   suggestSale,
 } from '../utils/reducer';
+import { updateProductSelectOptions } from './productSelect';
+import { updateCartItemPrices } from './cartService';
 
 // 번개세일 타이머 시작 함수
-export function startLightningSaleTimer({
-  updateProductSelectOptions,
-  updateCartItemPrices,
-}) {
+export function startLightningSaleTimer() {
   const lightningDelay = Math.random() * TIMING.LIGHTNING_DELAY_MAX;
   setTimeout(() => {
     setInterval(function () {
@@ -39,10 +38,7 @@ export function startLightningSaleTimer({
 }
 
 // 추천세일 타이머 시작 함수
-export function startSuggestSaleTimer({
-  updateProductSelectOptions,
-  updateCartItemPrices,
-}) {
+export function startSuggestSaleTimer() {
   setTimeout(function () {
     setInterval(function () {
       const lastSel = getLastSelectedProduct();
@@ -66,10 +62,7 @@ export function startSuggestSaleTimer({
 }
 
 // 프로모션 타이머 시작 함수
-export function startPromotionTimers({
-  updateProductSelectOptions,
-  updateCartItemPrices,
-}) {
-  startLightningSaleTimer({ updateProductSelectOptions, updateCartItemPrices });
-  startSuggestSaleTimer({ updateProductSelectOptions, updateCartItemPrices });
+export function startPromotionTimers() {
+  startLightningSaleTimer();
+  startSuggestSaleTimer();
 }
