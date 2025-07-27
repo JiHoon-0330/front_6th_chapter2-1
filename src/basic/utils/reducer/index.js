@@ -1,18 +1,20 @@
-import { productsReducer } from './products.js';
-import { selectionReducer } from './selection.js';
+import { productsReducer } from './products';
+import { selectionReducer } from './selection';
+import { uiReducer } from './ui';
 import {
   getProducts as getProductsFromState,
   getProductById as getProductByIdFromState,
   getAvailableProducts as getAvailableProductsFromState,
   getLowStockProducts as getLowStockProductsFromState,
   getOutOfStockProducts as getOutOfStockProductsFromState,
-} from './products.js';
-import { getLastSelectedProduct as getLastSelectedProductFromState } from './selection.js';
+} from './products';
+import { getLastSelectedProduct as getLastSelectedProductFromState } from './selection';
 
 // 리듀서 결합
 let state = {
   products: productsReducer(undefined, { type: 'INIT' }),
   lastSelectedProduct: selectionReducer(undefined, { type: 'INIT' }),
+  ui: uiReducer(undefined, { type: 'INIT' }),
 };
 
 // 디스패치
@@ -21,6 +23,7 @@ export const dispatch = (action) => {
     ...state,
     products: productsReducer(state.products, action),
     lastSelectedProduct: selectionReducer(state.lastSelectedProduct, action),
+    ui: uiReducer(state.ui, action),
   };
 };
 
@@ -32,12 +35,29 @@ export {
   resetProductSales,
   lightningSale,
   suggestSale,
-} from './products.js';
+} from './products';
+
+export { setLastSelectedProduct, clearLastSelectedProduct } from './selection';
 
 export {
-  setLastSelectedProduct,
-  clearLastSelectedProduct,
-} from './selection.js';
+  updateSelectorOptionsAction,
+  updateSelectorBorderColorAction,
+  updateCartTotalAction,
+  updateCartItemCountAction,
+  updateCartSummaryAction,
+  updateLoyaltyPointsAction,
+  updateDiscountInfoAction,
+  updateStockStatusAction,
+  toggleTuesdaySpecialAction,
+  updateCartItemPricesAction,
+  addCartItemAction,
+  removeCartItemAction,
+  updateCartItemQuantityAction,
+  toggleManualOverlayAction,
+  toggleManualColumnAction,
+  setManualOverlayHiddenAction,
+  setManualColumnTranslatedAction,
+} from './ui';
 
 // 전역 상태를 전달하는 셀렉터 래퍼들
 export const getProducts = () => getProductsFromState(state.products);

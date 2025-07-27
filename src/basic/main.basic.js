@@ -19,6 +19,10 @@ import {
   getProducts,
   getLastSelectedProduct,
   setLastSelectedProduct,
+  toggleManualOverlayAction,
+  toggleManualColumnAction,
+  setManualOverlayHiddenAction,
+  setManualColumnTranslatedAction,
 } from './utils/reducer';
 
 function main() {
@@ -42,14 +46,14 @@ function main() {
 
   const manualOverlay = createManualOverlay({
     onClick: () => {
-      manualOverlay.classList.add('hidden');
-      manualColumn.classList.add('translate-x-full');
+      dispatch(setManualOverlayHiddenAction(true));
+      dispatch(setManualColumnTranslatedAction(true));
     },
   });
   const manualToggle = createManualToggle({
     onClick: () => {
-      manualOverlay.classList.toggle('hidden');
-      manualColumn.classList.toggle('translate-x-full');
+      dispatch(toggleManualOverlayAction());
+      dispatch(toggleManualColumnAction());
     },
   });
   const manualColumn = createManualColumn();
