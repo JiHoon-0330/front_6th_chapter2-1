@@ -277,7 +277,7 @@ function handleCalculateCartStuff() {
   }
   const today = new Date();
   const isTuesday = today.getDay() === 2;
-  const tuesdaySpecial = document.getElementById('tuesday-special');
+  const tuesdaySpecial = selector.tuesdaySpecial;
   if (isTuesday) {
     if (totalAmt > 0) {
       totalAmt = (totalAmt * 90) / 100;
@@ -289,9 +289,8 @@ function handleCalculateCartStuff() {
   } else {
     tuesdaySpecial.classList.add('hidden');
   }
-  document.getElementById('item-count').textContent =
-    '🛍️ ' + itemCnt + ' items in cart';
-  const summaryDetails = document.getElementById('summary-details');
+  selector.headerItemCount.textContent = '🛍️ ' + itemCnt + ' items in cart';
+  const summaryDetails = selector.summaryDetails;
   summaryDetails.innerHTML = '';
   if (subTot > 0) {
     for (let i = 0; i < cartItems.length; i++) {
@@ -353,12 +352,12 @@ function handleCalculateCartStuff() {
       </div>
     `;
   }
-  const sum = document.querySelector('#cart-total');
+  const sum = selector.cartTotal;
   const totalDiv = sum.querySelector('.text-2xl');
   if (totalDiv) {
     totalDiv.textContent = '₩' + Math.round(totalAmt).toLocaleString();
   }
-  const loyaltyPointsDiv = document.getElementById('loyalty-points');
+  const loyaltyPointsDiv = selector.loyaltyPoints;
   if (loyaltyPointsDiv) {
     points = Math.floor(totalAmt / 1000);
     if (points > 0) {
@@ -369,7 +368,7 @@ function handleCalculateCartStuff() {
       loyaltyPointsDiv.style.display = 'block';
     }
   }
-  const discountInfoDiv = document.getElementById('discount-info');
+  const discountInfoDiv = selector.discountInfo;
   discountInfoDiv.innerHTML = '';
   if (discRate > 0 && totalAmt > 0) {
     savedAmount = originalTotal - totalAmt;
@@ -383,7 +382,7 @@ function handleCalculateCartStuff() {
       </div>
     `;
   }
-  const itemCountElement = document.getElementById('item-count');
+  const itemCountElement = selector.headerItemCount;
   if (itemCountElement) {
     previousCount = parseInt(itemCountElement.textContent.match(/\d+/) || 0);
     itemCountElement.textContent = '🛍️ ' + itemCnt + ' items in cart';
@@ -409,7 +408,7 @@ function handleCalculateCartStuff() {
 }
 const doRenderBonusPoints = function ({ itemCnt, totalAmt }) {
   if (selector.cartItems.children.length === 0) {
-    document.getElementById('loyalty-points').style.display = 'none';
+    selector.loyaltyPoints.style.display = 'none';
     return;
   }
   const basePoints = Math.floor(totalAmt / 1000);
@@ -463,7 +462,7 @@ const doRenderBonusPoints = function ({ itemCnt, totalAmt }) {
     }
   }
   const bonusPts = finalPoints;
-  const ptsTag = document.getElementById('loyalty-points');
+  const ptsTag = selector.loyaltyPoints;
   if (ptsTag) {
     if (bonusPts > 0) {
       ptsTag.innerHTML =

@@ -1,4 +1,5 @@
 import { html } from '../utils/html';
+import { HEADER_ITEM_COUNT_ID } from '../utils/selector';
 
 export const createHeader = () => {
   const headerElement = document.createElement('div');
@@ -8,7 +9,10 @@ export const createHeader = () => {
       🛒 Hanghae Online Store
     </h1>
     <div class="text-5xl tracking-tight leading-none">Shopping Cart</div>
-    <p id="item-count" class="text-sm text-gray-500 font-normal mt-3">
+    <p
+      id="${HEADER_ITEM_COUNT_ID}"
+      class="text-sm text-gray-500 font-normal mt-3"
+    >
       🛍️ 0 items in cart
     </p>
   `;

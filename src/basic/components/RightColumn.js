@@ -1,4 +1,12 @@
 import { html } from '../utils/html';
+import {
+  CART_TOTAL_ID,
+  DISCOUNT_INFO_ID,
+  LOYALTY_POINTS_ID,
+  POINTS_NOTICE_ID,
+  SUMMARY_DETAILS_ID,
+  TUESDAY_SPECIAL_ID,
+} from '../utils/selector';
 
 export const createRightColumn = () => {
   const rightColumn = document.createElement('div');
@@ -8,23 +16,23 @@ export const createRightColumn = () => {
       Order Summary
     </h2>
     <div class="flex-1 flex flex-col">
-      <div id="summary-details" class="space-y-3"></div>
+      <div id="${SUMMARY_DETAILS_ID}" class="space-y-3"></div>
       <div class="mt-auto">
-        <div id="discount-info" class="mb-4"></div>
-        <div id="cart-total" class="pt-5 border-t border-white/10">
+        <div id="${DISCOUNT_INFO_ID}" class="mb-4"></div>
+        <div id="${CART_TOTAL_ID}" class="pt-5 border-t border-white/10">
           <div class="flex justify-between items-baseline">
             <span class="text-sm uppercase tracking-wider">Total</span>
             <div class="text-2xl tracking-tight">₩0</div>
           </div>
           <div
-            id="loyalty-points"
+            id="${LOYALTY_POINTS_ID}"
             class="text-xs text-blue-400 mt-2 text-right"
           >
             적립 포인트: 0p
           </div>
         </div>
         <div
-          id="tuesday-special"
+          id="${TUESDAY_SPECIAL_ID}"
           class="mt-4 p-3 bg-white/10 rounded-lg hidden"
         >
           <div class="flex items-center gap-2">
@@ -43,7 +51,7 @@ export const createRightColumn = () => {
     </button>
     <p class="mt-4 text-2xs text-white/60 text-center leading-relaxed">
       Free shipping on all orders.<br />
-      <span id="points-notice">Earn loyalty points with purchase.</span>
+      <span id="${POINTS_NOTICE_ID}">Earn loyalty points with purchase.</span>
     </p>
   `;
 
