@@ -10,70 +10,63 @@ import { createProductSelect } from './components/ProductSelect';
 import { createRightColumn } from './components/RightColumn';
 import { createSelectorContainer } from './components/SelectorContainer';
 import { createStockStatus } from './components/StockStatus';
+import { selector } from './utils/selector';
 
 let prodList;
-let bonusPts = 0;
-let stockInfo;
-let itemCnt;
 let lastSel;
-let sel;
-let addBtn;
-let totalAmt = 0;
-const PRODUCT_ONE = 'p1';
-const p2 = 'p2';
-const product_3 = 'p3';
-const p4 = 'p4';
-const PRODUCT_5 = 'p5';
-let cartDisp;
+
 function main() {
-  totalAmt = 0;
-  itemCnt = 0;
   lastSel = null;
   prodList = [
     {
-      id: PRODUCT_ONE,
+      id: 'p1',
       name: '버그 없애는 키보드',
       val: 10000,
       originalVal: 10000,
       q: 50,
       onSale: false,
       suggestSale: false,
+      discountRate: 0.1,
     },
     {
-      id: p2,
+      id: 'p2',
       name: '생산성 폭발 마우스',
       val: 20000,
       originalVal: 20000,
       q: 30,
       onSale: false,
       suggestSale: false,
+      discountRate: 0.15,
     },
     {
-      id: product_3,
+      id: 'p3',
       name: '거북목 탈출 모니터암',
       val: 30000,
       originalVal: 30000,
       q: 20,
       onSale: false,
       suggestSale: false,
+      discountRate: 0.2,
     },
     {
-      id: p4,
+      id: 'p4',
       name: '에러 방지 노트북 파우치',
       val: 15000,
       originalVal: 15000,
       q: 0,
       onSale: false,
       suggestSale: false,
+      discountRate: 0.05,
     },
     {
-      id: PRODUCT_5,
+      id: 'p5',
       name: '코딩할 때 듣는 Lo-Fi 스피커',
       val: 25000,
       originalVal: 25000,
       q: 10,
       onSale: false,
       suggestSale: false,
+      discountRate: 0.25,
     },
   ];
   const root = document.getElementById('app');
@@ -82,16 +75,16 @@ function main() {
   const leftColumn = createLeftColumn();
   const selectorContainer = createSelectorContainer();
   const rightColumn = createRightColumn();
-  sel = createProductSelect();
-  addBtn = createAddToCartBtn();
-  stockInfo = createStockStatus();
+  const sel = createProductSelect();
+  const addBtn = createAddToCartBtn({ onClick: handleClickAddToCartBtn });
+  const stockInfo = createStockStatus();
 
   selectorContainer.appendChild(sel);
   selectorContainer.appendChild(addBtn);
   selectorContainer.appendChild(stockInfo);
   leftColumn.appendChild(selectorContainer);
 
-  cartDisp = createCartItems();
+  const cartDisp = createCartItems({ onClick: handleClickQuantityChange });
   leftColumn.appendChild(cartDisp);
 
   const manualOverlay = createManualOverlay({
@@ -115,8 +108,6 @@ function main() {
   root.appendChild(gridContainer);
   root.appendChild(manualToggle);
   root.appendChild(manualOverlay);
-
-  sum = document.querySelector('#cart-total');
 
   onUpdateSelectOptions();
   handleCalculateCartStuff();
@@ -163,12 +154,12 @@ function main() {
     }, 60000);
   }, Math.random() * 20000);
 }
-let sum;
+
 function onUpdateSelectOptions() {
   let totalStock;
   let opt;
   let discountText;
-  sel.innerHTML = '';
+  selector.productSelect.innerHTML = '';
   totalStock = 0;
   for (let idx = 0; idx < prodList.length; idx++) {
     const _p = prodList[idx];
@@ -221,12 +212,12 @@ function onUpdateSelectOptions() {
         opt.textContent = item.name + ' - ' + item.val + '원' + discountText;
       }
     }
-    sel.appendChild(opt);
+    selector.productSelect.appendChild(opt);
   }
   if (totalStock < 50) {
-    sel.style.borderColor = 'orange';
+    selector.productSelect.style.borderColor = 'orange';
   } else {
-    sel.style.borderColor = '';
+    selector.productSelect.style.borderColor = '';
   }
 }
 function handleCalculateCartStuff() {
@@ -234,10 +225,11 @@ function handleCalculateCartStuff() {
   let points;
   let previousCount;
   let stockMsg;
-  totalAmt = 0;
-  itemCnt = 0;
-  let originalTotal = totalAmt;
-  const cartItems = cartDisp.children;
+  let itemCnt = 0;
+  let totalAmt = 0;
+  let originalTotal = 0;
+
+  const cartItems = selector.cartItems.children;
   let subTot = 0;
   const itemDiscounts = [];
   const lowStockItems = [];
@@ -268,25 +260,7 @@ function handleCalculateCartStuff() {
       }
     });
     if (q >= 10) {
-      if (curItem.id === PRODUCT_ONE) {
-        disc = 10 / 100;
-      } else {
-        if (curItem.id === p2) {
-          disc = 15 / 100;
-        } else {
-          if (curItem.id === product_3) {
-            disc = 20 / 100;
-          } else {
-            if (curItem.id === p4) {
-              disc = 5 / 100;
-            } else {
-              if (curItem.id === PRODUCT_5) {
-                disc = 25 / 100;
-              }
-            }
-          }
-        }
-      }
+      disc = curItem.discountRate;
       if (disc > 0) {
         itemDiscounts.push({ name: curItem.name, discount: disc * 100 });
       }
@@ -379,6 +353,7 @@ function handleCalculateCartStuff() {
       </div>
     `;
   }
+  const sum = document.querySelector('#cart-total');
   const totalDiv = sum.querySelector('.text-2xl');
   if (totalDiv) {
     totalDiv.textContent = '₩' + Math.round(totalAmt).toLocaleString();
@@ -428,12 +403,12 @@ function handleCalculateCartStuff() {
       }
     }
   }
-  stockInfo.textContent = stockMsg;
+  selector.stockStatus.textContent = stockMsg;
   handleStockInfoUpdate();
-  doRenderBonusPoints();
+  doRenderBonusPoints({ itemCnt, totalAmt });
 }
-const doRenderBonusPoints = function () {
-  if (cartDisp.children.length === 0) {
+const doRenderBonusPoints = function ({ itemCnt, totalAmt }) {
+  if (selector.cartItems.children.length === 0) {
     document.getElementById('loyalty-points').style.display = 'none';
     return;
   }
@@ -453,20 +428,15 @@ const doRenderBonusPoints = function () {
   let hasKeyboard = false;
   let hasMouse = false;
   let hasMonitorArm = false;
-  for (const node of cartDisp.children) {
-    let product = null;
-    for (let pIdx = 0; pIdx < prodList.length; pIdx++) {
-      if (prodList[pIdx].id === node.id) {
-        product = prodList[pIdx];
-        break;
-      }
-    }
+  for (const node of selector.cartItems.children) {
+    const product = prodList.find((p) => p.id === node.id);
     if (!product) continue;
-    if (product.id === PRODUCT_ONE) {
+
+    if (product.id === 'p1') {
       hasKeyboard = true;
-    } else if (product.id === p2) {
+    } else if (product.id === 'p2') {
       hasMouse = true;
-    } else if (product.id === product_3) {
+    } else if (product.id === 'p3') {
       hasMonitorArm = true;
     }
   }
@@ -492,7 +462,7 @@ const doRenderBonusPoints = function () {
       }
     }
   }
-  bonusPts = finalPoints;
+  const bonusPts = finalPoints;
   const ptsTag = document.getElementById('loyalty-points');
   if (ptsTag) {
     if (bonusPts > 0) {
@@ -523,10 +493,10 @@ const handleStockInfoUpdate = function () {
       }
     }
   });
-  stockInfo.textContent = infoMsg;
+  selector.stockStatus.textContent = infoMsg;
 };
 function doUpdatePricesInCart() {
-  const cartItems = cartDisp.children;
+  const cartItems = selector.cartItems.children;
   for (let i = 0; i < cartItems.length; i++) {
     const itemId = cartItems[i].id;
     let product = null;
@@ -572,8 +542,9 @@ function doUpdatePricesInCart() {
   handleCalculateCartStuff();
 }
 main();
-addBtn.addEventListener('click', function () {
-  const selItem = sel.value;
+
+function handleClickAddToCartBtn() {
+  const selItem = selector.productSelect.value;
   let hasItem = false;
   for (let idx = 0; idx < prodList.length; idx++) {
     if (prodList[idx].id === selItem) {
@@ -626,14 +597,15 @@ addBtn.addEventListener('click', function () {
           <a class="remove-item text-2xs text-gray-500 uppercase tracking-wider cursor-pointer transition-colors border-b border-transparent hover:text-black hover:border-black" data-product-id="${itemToAdd.id}">Remove</a>
         </div>
       `;
-      cartDisp.appendChild(newItem);
+      selector.cartItems.appendChild(newItem);
       itemToAdd.q--;
     }
     handleCalculateCartStuff();
     lastSel = selItem;
   }
-});
-cartDisp.addEventListener('click', function (event) {
+}
+
+function handleClickQuantityChange(event) {
   const tgt = event.target;
   if (
     tgt.classList.contains('quantity-change') ||
@@ -671,4 +643,4 @@ cartDisp.addEventListener('click', function (event) {
     handleCalculateCartStuff();
     onUpdateSelectOptions();
   }
-});
+}
