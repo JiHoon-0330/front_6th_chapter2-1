@@ -24,7 +24,13 @@ import { appendChildren } from '../utils/appendChildren';
 
 // UI 초기화 및 이벤트 설정 함수
 export function initializeUI() {
-  appendChildren(document.getElementById('app'), [
+  const root = document.getElementById('app');
+
+  if (!root) {
+    throw new Error('app element not found');
+  }
+
+  appendChildren(root, [
     Header(),
     GridContainer({
       children: [
